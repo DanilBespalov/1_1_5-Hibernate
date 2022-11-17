@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
-    SessionFactory factory = new Configuration()
+    private static final SessionFactory factory = new Configuration()
             .configure("hibernate.cfg.xml")
             .addAnnotatedClass(User.class)
             .buildSessionFactory();
@@ -30,8 +30,8 @@ public class UserDaoHibernateImpl implements UserDao {
     @Override
     @Transactional
     public void createUsersTable() {
-        try (Session session = factory.getCurrentSession()) {
-            session.createQuery("CREATE User (id long, name varchar(45) not null , lastName varchar(45) not null , age int not null)", User.class);
+        try (Session session = factory.getCurrentSession()) {=
+           session.createQuery("CREATE User (id long, name varchar(45) not null , lastName varchar(45) not null , age int not null)", User.class);
 
         }
     }
@@ -49,10 +49,9 @@ public class UserDaoHibernateImpl implements UserDao {
     @Transactional
     public void saveUser(String name, String lastName, byte age) {
         try (Session session = factory.getCurrentSession()) {
-
-            session.createQuery("insert into users (name, lastName, age) values (?, ?, ?)", User.class);
-
-            System.out.println("User c именем " + name + "добавлен в базу данных");
+            User user = new User(name, lastName, age);
+            session.createQuery("insert into User (name, lastName, age) values (?, ?, ?)", User.class);
+            System.out.println("User c именем " + name + " добавлен в базу данных");
         }
     }
 
@@ -60,9 +59,9 @@ public class UserDaoHibernateImpl implements UserDao {
     @Transactional
     public void removeUserById(long id) {
         try (Session session = factory.getCurrentSession()) {
-            session.beginTransaction();
+//            session.beginTransaction();
             User user = session.get(User.class, id);
-            session.delete(user);
+            session.remove(user);
 //            session.createQuery("delete User where id = ").executeUpdate();
         }
     }
