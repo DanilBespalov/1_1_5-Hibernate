@@ -80,7 +80,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
         try (Session session = factory.openSession()) {
             session.beginTransaction();
-            userList = session.createQuery("from User").getResultList();
+            userList = session.createQuery("from User", User.class).getResultList();
 
             for (User u : userList) {
                 System.out.println(u);
